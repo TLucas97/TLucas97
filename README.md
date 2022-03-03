@@ -1,4 +1,4 @@
-<img src="./img/programing-image.png" min-width="400px" max-width="400px" width="400px" align="right" alt="Computador Image" title="Computador Image">
+<img src="./img/programer.png" min-width="400px" max-width="400px" width="400px" align="right" alt="Computador Image" title="Computador Image">
 
 
 # Hey, i'm Lucas!  :books::grin:
