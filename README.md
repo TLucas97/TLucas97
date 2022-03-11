@@ -7,6 +7,6 @@
 
 - Skills: HTML, CSS, Sass and JavaScript, Vue.js & Nuxt.js.
 - Currently improving my Javascript skills alongside with Vue and Nuxt.
-- Tools: VSCode, Github and Git.
+- Tools: VSCode, Git.
 - SO: Windows.
 - Reach me: tarcisio.almeida197@gmail.com
