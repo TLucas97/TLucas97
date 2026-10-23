@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 30" width="880" height="30">
+<style>
+text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono','Noto Sans Mono',monospace;font-size:16px;white-space:pre}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}.cover,.fr{display:none}}
+
+@keyframes blip{0%,.55%{opacity:1}.56%,100%{opacity:0}}
+@keyframes hide{0%,1.68%{opacity:0}1.69%,100%{opacity:1}}
+.mf{opacity:0;animation:blip 9s step-end infinite}
+.mode{animation:hide 9s step-end 4s infinite}
+@media (prefers-reduced-motion:reduce){.mf{display:none}}
+</style>
+<rect width="880" height="30" rx="6" fill="#16181c"/>
+<rect width="76.8" height="30" rx="6" fill="#f2b24c"/>
+<text x="0.0" y="20.0" fill="#0a0b0d" textLength="76.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve" class="mode"> NORMAL </text>
+<text x="0.0" y="20.0" fill="#0a0b0d" textLength="76.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve" class="mf" style="animation-delay:4.00s"> ZFH%HI </text><text x="0.0" y="20.0" fill="#0a0b0d" textLength="76.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve" class="mf" style="animation-delay:4.05s"> 0Z░░8M </text><text x="0.0" y="20.0" fill="#0a0b0d" textLength="76.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve" class="mf" style="animation-delay:4.10s"> NCR\AL </text>
+<rect x="76.8" width="105.6" height="30" fill="#23262c"/>
+<text x="76.8" y="20.0" fill="#c8ccd2" textLength="105.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> [No Name] </text>
+<text x="201.6" y="20.0" fill="#5b616b" textLength="316.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">gur ynfg xrl fyrrcf va gur fbhepr</text>
+<text x="640.0" y="20.0" fill="#5b616b" textLength="240.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">utf-8 │ 0x00 │ 0:0 │ Top </text>
+</svg>
