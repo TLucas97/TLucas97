@@ -16,20 +16,11 @@
 
 <p align="center"><sub><code>it was reading before you arrived.</code></sub></p>
 
-```text
-2▒</%·9+&;/0+░5>@=<96&<67▓\11$\\░9░>6><9<*#>;32><4>&*░%@<\=▓#*
-810░134#▓*%8*·4#<O·4<▒=░5%9&░;7@%&08░$▒4<1>/6+8$%:%:=6$/0567%9
-*▒@▓>#:1%\#=4;▓*3#*<7▓2\54*·<5▒▓1;&▒+51%8=$2@\▒2▒7·#8>\50\27@/
-<@%\▒9P*\E19<:$·45#·=*·&\/&8;<2·9#<▓·=:7;9:%▓776%403▒6*%;43=8·
-N644*#2<09░·;6=#3=$*8:237%%=2%58@%8<994$%#:\:<>8%9·*4▓5T5@<160
-:3@*1;692=5░><0$12<+63<24▒H+<▒\/#<·>;▒@$%&31▓0>+4%░%&=9@9/48;%
-▒;1*/*;:#0*E8\@@802;%$\<1&T·>\1▓%83░&/#01;\#20H@@+·*·4&&9<11=5
-*·=@░#*·*IR░/31$+*▒7\8&░·;;=D·7▒+·=9\5D*·1·:2915/░6\**;4#1*5:O
-$%%3580\▒░=;$3/3;>░@67@104422·98&·&395>*$O6▓*8░46@0R26·*\<·4;·
-#;\@0;7▒▓5+=8▓7▓3░#5@▓&4·▒/8/+128/4\*4$\<1<@7<▓1>▒;/3&5▓=▒00/5
-```
+<p align="center">
+  <img src="./img/wall.svg" width="100%" alt="a wall of glyphs that will not hold still">
+</p>
 
-<p align="center"><sub><code>the wall is not noise. it only looks like it.</code></sub></p>
+<p align="center"><sub><code>the wall is not noise. some of it refuses to move.</code></sub></p>
 
 <br>
 
@@ -93,12 +84,6 @@ dGhlIHN0YXR1c2xpbmUgaXMgcm90YXRlZCBieSB0aGlydGVlbi4=
 </details>
 
 <br>
-
-```text
-~
-~
-~
-```
 
 <p align="center">
   <img src="./img/statusline.svg" width="100%" alt="a statusline for a buffer with no name">

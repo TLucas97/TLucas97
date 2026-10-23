@@ -277,8 +277,13 @@ def build_statusline():
 .mode{{animation:hide 9s step-end 4s infinite}}
 @media (prefers-reduced-motion:reduce){{.mf{{display:none}}}}
 """
-    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">
+    # vim's empty-buffer tildes sit above the bar, as in a real window.
+    tildes = "".join(t(0, 16 + k * 22, "~", "#3d4a66") for k in range(3))
+    top = 3 * 22
+    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H + top}" width="{W}" height="{H + top}">
 <style>{css}</style>
+{tildes}
+<g transform="translate(0 {top})">
 <rect width="{W}" height="{H}" rx="6" fill="#16181c"/>
 <rect width="{mw:.1f}" height="{H}" rx="6" fill="{ACC}"/>
 {t(0, y, mode, BG, cls="mode")}
@@ -287,12 +292,115 @@ def build_statusline():
 {t(mw, y, name, FG)}
 {t(mw + len(name) * CW + 2 * CW, y, rot, DIM)}
 {t(rx, y, right, DIM)}
+</g>
 </svg>
 """
     (OUT / "statusline.svg").write_text(svg)
 
 
+# ---------------------------------------------------------------- wall.svg
+
+def build_wall():
+    """Noise that never sits still, and sixteen letters that never move. Stillness is the signal."""
+    random.seed(5)
+    W, PAD, LHW = 880, 24, 22
+    cols, rows = int((W - 2 * PAD) // CW), 14
+    H = rows * LHW + 2 * PAD
+    GRAY = "#7d8590"
+    noise = "░▒▓/\\<>+=*#%&@$·:;0123456789╱╲┼"
+    msg = "OPENTHETHIRDDOOR"
+    cells = sorted(random.sample(range(cols, cols * (rows - 1)), len(msg)))
+    hidden = {divmod(c, cols): ch for c, ch in zip(cells, msg)}
+    F = 6  # flipbook frames per row
+
+    def row_text(y, s, cls="", style="", fill=None):
+        attrs = f' class="{cls}"' if cls else ""
+        attrs += f' style="{style}"' if style else ""
+        attrs += f' fill="{fill}"' if fill else ""
+        return (f'<text x="{PAD}" y="{y}" textLength="{len(s) * CW:.1f}" lengthAdjust="spacingAndGlyphs" '
+                f'xml:space="preserve"{attrs}>{escape(s)}</text>')
+
+    css = [BASE_CSS, f"""
+@keyframes fb{{0%,{100 / F + .4:.2f}%{{opacity:1}}{100 / F + .5:.2f}%,100%{{opacity:0}}}}
+.f{{opacity:0}}.f0{{opacity:1}}
+@keyframes wave{{0%,78%,100%{{fill:{GRAY}}}82%{{fill:{ACC}}}86%{{fill:{ERR}}}90%{{fill:#5ce1e6}}94%{{fill:{GRAY}}}}}
+@keyframes j0{{0%,47%,49.4%,100%{{transform:none}}47.2%{{transform:translateX(14px)}}48%{{transform:translateX(-9px)}}48.8%{{transform:translateX(4px)}}}}
+@keyframes j1{{0%,71%,73.2%,100%{{transform:none}}71.3%{{transform:translateX(-22px)}}72.4%{{transform:translateX(6px)}}}}
+@keyframes j2{{0%,12%,14%,100%{{transform:none}}12.2%{{transform:translateX(31px) skewX(-20deg)}}13.1%{{transform:translateX(-12px)}}}}
+@keyframes scan{{0%{{transform:translateY(-70px);opacity:.22}}100%{{transform:translateY({H + 10}px);opacity:.22}}}}
+@keyframes glow{{0%{{opacity:.95}}14%,100%{{opacity:0}}}}
+@keyframes quake{{0%,89.9%,92.4%,100%{{transform:none}}90.2%{{transform:translate(-6px,2px) skewX(8deg)}}90.9%{{transform:translate(9px,-1px) skewX(-14deg) scaleY(1.05)}}91.6%{{transform:translate(-3px,0)}}}}
+@keyframes rgbR{{0%,89.9%,92.4%,100%{{opacity:0;transform:none}}90%{{opacity:.95;transform:translate(-9px,1px)}}91.2%{{opacity:.8;transform:translate(5px,0)}}}}
+@keyframes rgbC{{0%,90.3%,92.6%,100%{{opacity:0;transform:none}}90.4%{{opacity:.95;transform:translate(10px,-1px)}}91.6%{{opacity:.7;transform:translate(-4px,0)}}}}
+@keyframes tear{{0%,90.1%,90.6%,91.1%,91.9%,100%{{opacity:0}}90.2%,90.5%,91.2%,91.8%{{opacity:1}}}}
+@keyframes smear{{0%,90.5%,91.5%,100%{{transform:none}}90.6%,91.4%{{transform:scaleX(2.6)}}}}
+@keyframes visit{{0%,4.4%,100%{{opacity:0}}0.4%,4%{{opacity:1}}}}
+.scan{{opacity:0;mix-blend-mode:screen;animation:scan 4.2s linear infinite}}
+.gl,.rgb,.tear,.visit{{opacity:0}}
+.all{{animation:quake 8.3s linear 2s infinite}}
+.rgbR{{mix-blend-mode:screen;animation:rgbR 8.3s linear 2s infinite}}
+.rgbC{{mix-blend-mode:screen;animation:rgbC 8.3s linear 2s infinite}}
+.tear{{mix-blend-mode:difference;animation:tear 8.3s linear 2s infinite}}
+.smear{{transform-box:fill-box;transform-origin:left;animation:smear 8.3s linear 2s infinite}}
+"""]
+    body, static = [], []
+    smear_rows = set(random.sample(range(rows), 2))
+    for r in range(rows):
+        y = PAD + 16 + r * LHW
+        base = [" " if (r, c) in hidden or random.random() < .12 else random.choice(noise) for c in range(cols)]
+        frames = [base]
+        for _ in range(F - 1):
+            frames.append([c if c == " " or random.random() > .5 else random.choice(noise) for c in frames[-1]])
+        tick = random.choice([.1, .15, .2])
+        period = F * tick
+        off = round(random.uniform(0, period), 2)  # keeps frame delays exact, so rows never blank out
+        flips = "".join(
+            row_text(y, "".join(f), cls=f"f f{k}", style=f"animation:fb {period:.2f}s linear {k * tick - period - off:.2f}s infinite")
+            for k, f in enumerate(frames))
+        letters = "".join(hidden.get((r, c), " ") for c in range(cols))
+        has_letters = letters.strip() != ""
+        # A white copy of the letters flares as the scanline crosses their row.
+        reach = (y + 70) / (H + 80) * 4.2
+        glow = row_text(y, letters, cls="gl", fill="#ffffff", style=f"animation:glow 4.2s linear {reach:.2f}s infinite") if has_letters else ""
+        lit = row_text(y, letters) if has_letters else ""
+        jit = f"j{random.randint(0, 2)} {random.choice([3.1, 4.7, 5.9, 7.3, 9.7])}s linear {-random.uniform(0, 9):.2f}s infinite"
+        inner = f'<g class="smear">{flips}{lit}{glow}</g>' if r in smear_rows else flips + lit + glow
+        body.append(f'<g fill="{GRAY}" style="animation:{jit},wave 6s linear {r * .07:.2f}s infinite">{inner}</g>')
+        static.append(row_text(y, "".join(base)) + lit)
+
+    # The eye visits the wall now and then, and leaves before anyone is sure.
+    visits = []
+    for k in range(3):
+        c, r = random.randint(4, cols - 8), random.randint(1, rows - 2)
+        x, y = PAD + c * CW, PAD + 16 + r * LHW
+        visits.append(
+            f'<g class="visit" style="animation:visit 13s linear {2.5 + k * 4.1:.1f}s infinite">'
+            f'<rect x="{x - 2:.1f}" y="{y - 17}" width="{3 * CW + 4:.1f}" height="{LHW}" fill="{BG}"/>'
+            f'{t(x, y, "(◉)", ACC)}</g>')
+    tears = "".join(
+        f'<rect class="tear" x="0" y="{random.randint(PAD, H - PAD)}" width="{W}" height="{random.randint(4, 26)}" fill="#ffffff"/>'
+        for _ in range(3))
+    frame0 = "".join(static)
+    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">
+<style>{''.join(css)}</style>
+<defs>
+<filter id="red"><feColorMatrix values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"/></filter>
+<filter id="cyan"><feColorMatrix values="0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"/></filter>
+<linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{ACC}" stop-opacity="0"/><stop offset=".7" stop-color="{ACC}"/><stop offset="1" stop-color="#ffffff"/></linearGradient>
+</defs>
+<rect width="{W}" height="{H}" rx="10" fill="{BG}"/>
+<g class="all">{''.join(body)}{''.join(visits)}</g>
+<g class="rgb rgbR" fill="{GRAY}" filter="url(#red)">{frame0}</g>
+<g class="rgb rgbC" fill="{GRAY}" filter="url(#cyan)">{frame0}</g>
+<rect class="scan" x="0" y="0" width="{W}" height="60" fill="url(#sg)"/>
+{tears}
+</svg>
+"""
+    (OUT / "wall.svg").write_text(svg)
+
+
 if __name__ == "__main__":
+    build_wall()
     build_boot()
     build_eye()
     build_statusline()
